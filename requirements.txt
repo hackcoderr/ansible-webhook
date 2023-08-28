@@ -1,4 +1,4 @@
-ansible==5.10.0
+ansible==7.0.0
 ansible-core==2.12.10
 attrs==19.3.0
 Automat==0.8.0
