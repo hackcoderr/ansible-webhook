@@ -1,0 +1,22 @@
+--
+- name: Create file with date and time
+  hosts: server
+  gather_facts: true  # Set this to true to enable fact gathering
+
+  tasks:
+    - name: Create the directory (optional, if needed)
+      file:
+        path: "/home/ubuntu/"
+        state: directory
+        mode: '0755'
+      become: yes
+
+    - name: Get current date and time
+      set_fact:
+        current_datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}{{ ansible_date_time.second }}"
+
+    - name: Create the file with the date and time as the name
+      copy:
+        content: "This is a file created on {{ current_datetime }}"
+        dest: "/home/ubuntu/{{ current_datetime }}.txt"
+      become: yes
