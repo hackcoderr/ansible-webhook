@@ -13,7 +13,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"pod_name": "YourPodName",
 
 
 Here's a Python script that reads a text file, processes its contents, and saves the data in an Excel file:
-
+```
 import openpyxl
 
 # Read the text file
@@ -30,6 +30,7 @@ for i, line in enumerate(lines):
 
 # Save the Excel file
 workbook.save('console_output.xlsx')
+```
 
 
 
