@@ -32,7 +32,27 @@ for i, line in enumerate(lines):
 workbook.save('console_output.xlsx')
 ```
 
+```
+from flask import Flask, request, jsonify
 
+app = Flask(__name__)
+
+# Define the path to the file where you want to store the alert data
+alert_data_file = 'alert_data.txt'
+
+@app.route('/alert', methods=['POST'])
+def receive_alert():
+    data = request.json  # Parse incoming JSON data
+
+    # Write the alert data to the specified file (overwriting existing data)
+    with open(alert_data_file, 'w') as file:
+        file.write(str(data) + '\n')
+
+    return jsonify({'message': 'Alert received and stored successfully'}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
 
 
 
