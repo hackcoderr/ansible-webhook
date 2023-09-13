@@ -54,7 +54,39 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 ```
 
+```
+from flask import Flask, request, jsonify
 
+app = Flask(__name__)
+
+# Define the path to the file where you want to store the alert data
+alert_data_file = 'alert_data.txt'
+
+@app.route('/alert', methods=['POST'])
+def receive_alert():
+    data = request.json  # Parse incoming JSON data
+
+    # Check if the status of the alert is not "resolved" before saving
+    if data['status'] != 'resolved':
+        # Extract 'k8sname' and 'pod' fields
+        severity = data['alerts'][0]['labels']['k8sname']
+        fingerprint = data['alerts'][0]['pod']
+
+        # Create a dictionary with the extracted fields
+        extracted_data = {
+            'k8sname': k8sname,
+            'pod': pod
+        }
+
+        # Write the extracted data to the specified file
+        with open(alert_data_file, 'w') as file:
+            file.write(str(extracted_data) + '\n')
+
+    return jsonify({'message': 'Alert received and stored successfully'}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
 
 Create a Jenkinsfile:
 
