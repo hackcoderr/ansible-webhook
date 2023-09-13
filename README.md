@@ -68,24 +68,21 @@ def receive_alert():
 
     # Check if the status of the alert is not "resolved" before saving
     if data['status'] != 'resolved':
-        # Extract 'k8sname' and 'pod' fields
-        severity = data['alerts'][0]['labels']['k8sname']
-        fingerprint = data['alerts'][0]['pod']
-
-        # Create a dictionary with the extracted fields
-        extracted_data = {
-            'k8sname': k8sname,
-            'pod': pod
+        # Extract 'k8sname' and 'pod' fields from the alert and save them to a dictionary
+        alert_info = {
+            'k8sname': data['commonLabels']['k8sname'],
+            'pod': data['commonLabels']['pod']
         }
 
-        # Write the extracted data to the specified file
+        # Write the extracted alert info to the specified file
         with open(alert_data_file, 'w') as file:
-            file.write(str(extracted_data) + '\n')
+            file.write(str(alert_info) + '\n')
 
     return jsonify({'message': 'Alert received and stored successfully'}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
 ```
 
 Create a Jenkinsfile:
