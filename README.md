@@ -83,7 +83,6 @@ def receive_alert():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
-```
 
 Create a Jenkinsfile:
 
@@ -91,5 +90,30 @@ Create a Jenkinsfile and define the pipeline stages. You can create a new file n
 
 
 
+```
+function forwardEmailsToChat() {
+  var chatRoomId = "YOUR_CHAT_ROOM_ID"; // Replace with your Chat room ID
+  var subjectToCheck = "Your Subject"; // Replace with the subject you want to check
 
+  var threads = GmailApp.search('subject:"' + subjectToCheck + '" is:unread');
+  
+  if (threads.length >= 10) {
+    var chatRoom = HangoutsChat.Rooms.get(chatRoomId);
+    var message = {
+      text: "Multiple emails with the same subject found. Forwarding details...",
+    };
+    HangoutsChat.Messages.create(message, chatRoom.name);
+    
+    for (var i = 0; i < threads.length; i++) {
+      var messages = threads[i].getMessages();
+      for (var j = 0; j < messages.length; j++) {
+        // Forward the email content to the Chat room
+        HangoutsChat.Messages.create({
+          text: "Email Content: " + messages[j].getPlainBody(),
+        }, chatRoom.name);
+      }
+    }
+  }
+}
 
+```
