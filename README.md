@@ -127,27 +127,26 @@ if __name__ == '__main__':
 
 
 ```
+import os
 import time
 import subprocess
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
-class MyHandler(FileSystemEventHandler):
-    def on_modified(self, event):
-        if event.src_path.endswith('data.py'):
-            print(f"Detected modification in {event.src_path}, triggering getkube.py")
-            subprocess.run(["python", "getkube.py"])
+# Initial modification time of data.py
+last_modified_time = os.path.getmtime('data.py')
 
-if __name__ == "__main__":
-    event_handler = MyHandler()
-    observer = Observer()
-    observer.schedule(event_handler, path='.', recursive=False)
-    observer.start()
+while True:
+    # Check the current modification time of data.py
+    current_modified_time = os.path.getmtime('data.py')
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+    # Compare it with the previous modification time
+    if current_modified_time != last_modified_time:
+        print("Detected modification in data.py, triggering getkube.py")
+        subprocess.run(["python", "getkube.py"])
+        
+        # Update the last modified time
+        last_modified_time = current_modified_time
+
+    # Sleep for a while before checking again (e.g., every 5 seconds)
+    time.sleep(5)
+
 ```
